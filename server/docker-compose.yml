@@ -9,8 +9,11 @@ services:
     container_name: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    expose:
+      - "5433"
     ports:
-      - '5432:5432'
+      - '5433:5433'
+    command: -p 5433
 
   app:
     build:
@@ -18,9 +21,9 @@ services:
       dockerfile: Dockerfile
     container_name: nest-docker-postgres
     environment:
-      - PORT=8080
+      - PORT=8000
     ports:
-      - '8080:8080'
+      - '8000:8000'
     depends_on:
       - db
     volumes:
