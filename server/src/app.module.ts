@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SellEntity } from './entities';
 
 @Module({
   imports: [
@@ -11,11 +12,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 5433,
       username: 'postgres',
       password: 'postgres',
-      database: 'postgres',
-      entities: [],
+      database: 'hubla',
+      entities: [SellEntity],
       synchronize: true,
       autoLoadEntities: true,
+      logging: true,
     }),
+    TypeOrmModule.forFeature([SellEntity]),
   ],
   controllers: [AppController],
   providers: [AppService],

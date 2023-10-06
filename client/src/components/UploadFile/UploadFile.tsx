@@ -9,14 +9,20 @@ export default function UploadFile() {
     file: null,
   });
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (formData.file) {
       const reader = new FileReader();
-      reader.onload = function (e) {
+      reader.onload = async function (e) {
         if (e && e.target) {
           const fileContent = e.target.result;
-          const parsedFile = parseFile(fileContent);
-          console.log("Arquivo tratado: ", parsedFile);
+          const body = JSON.stringify({ sell: parseFile(fileContent) });
+          await fetch("http://localhost:8000/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body,
+          });
         }
       };
       reader.readAsText(formData.file);
