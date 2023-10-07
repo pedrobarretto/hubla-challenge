@@ -1,12 +1,12 @@
 export interface Sell {
-  data: string;
+  type: number;
+  date: string;
   product: string;
-  seller: string;
-  type: TransactionType;
   value: number;
+  seller: string;
 }
 
-export enum TransactionType {
+export enum SellType {
   productorSell,
   afiliateSell,
   comissionPaid,

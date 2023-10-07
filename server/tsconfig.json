@@ -17,6 +17,7 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "strict": false,
     "paths": {
       "@nestjs/*": ["node_modules/@nestjs/*"]
     }

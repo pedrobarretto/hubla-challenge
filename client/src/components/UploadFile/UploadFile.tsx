@@ -1,6 +1,5 @@
 "use client";
 
-import { parseFile } from "@/utils";
 import { useState } from "react";
 
 export default function UploadFile() {
@@ -14,9 +13,8 @@ export default function UploadFile() {
       const reader = new FileReader();
       reader.onload = async function (e) {
         if (e && e.target) {
-          const fileContent = e.target.result;
-          const body = JSON.stringify({ sell: parseFile(fileContent) });
-          await fetch("http://localhost:8000/upload", {
+          const body = JSON.stringify({ sell: e.target.result });
+          await fetch("http://localhost:8000/sells", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
