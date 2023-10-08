@@ -1,4 +1,11 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { SellersService } from './sellers.service';
 import { SellerEntity } from 'src/entities';
 
@@ -17,5 +24,13 @@ export class SellersController {
     if (!seller) throw new NotFoundException('Seller not found');
 
     return seller;
+  }
+
+  @Post()
+  async findBySeller(@Body() dto: { name: string }): Promise<SellerEntity[]> {
+    const sell = await this.sellersService.findByName(dto.name);
+    if (!sell) throw new NotFoundException('Seller not found');
+
+    return sell;
   }
 }

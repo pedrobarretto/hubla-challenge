@@ -7,8 +7,8 @@ export interface Sell {
 }
 
 export enum SellType {
-  productorSell,
-  afiliateSell,
-  comissionPaid,
-  comissionReceived,
+  productorSell = 1,
+  afiliateSell = 2,
+  comissionPaid = 3,
+  comissionReceived = 4,
 }

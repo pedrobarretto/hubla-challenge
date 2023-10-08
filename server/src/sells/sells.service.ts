@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AfiliateService } from 'src/afiliate/afiliate.service';
 import { SellEntity } from 'src/entities';
 import { Sell, SellType } from 'src/interfaces';
 import { SellersService } from 'src/sellers/sellers.service';
@@ -11,6 +12,7 @@ export class SellsService {
     @InjectRepository(SellEntity)
     private sellsRespository: Repository<SellEntity>,
     private sellerService: SellersService,
+    private afiliateService: AfiliateService,
   ) {}
 
   async findAll(): Promise<SellEntity[]> {
@@ -33,7 +35,8 @@ export class SellsService {
     }
 
     const sellsArray: SellEntity[] = [];
-    const sellersSells: Sell[] = parsedSells
+    // FIXME: any -> Sell
+    const sellersSells: any[] = parsedSells
       .filter(
         (sell) =>
           sell &&
@@ -45,7 +48,21 @@ export class SellsService {
         if (sell) {
           return {
             type: sell.type,
-            date: new Date(sell.date),
+            date: String(new Date(sell.date).toISOString()),
+            product: sell.product,
+            value: sell.value,
+            seller: sell.seller,
+          };
+        }
+      });
+
+    const afiliateSells: any[] = parsedSells
+      .filter((sell) => sell && sell.type === SellType.afiliateSell)
+      .map((sell) => {
+        if (sell) {
+          return {
+            type: sell.type,
+            date: String(new Date(sell.date).toISOString()),
             product: sell.product,
             value: sell.value,
             seller: sell.seller,
@@ -61,7 +78,8 @@ export class SellsService {
       sellsArray.push(createdSell);
     });
 
-    this.sellerService.create(sellersSells);
+    await this.sellerService.create(sellersSells);
+    await this.afiliateService.create(afiliateSells);
 
     return sellsArray;
   }
@@ -107,7 +125,7 @@ export class SellsService {
       ) {
         transactions.push({
           type,
-          date: String(new Date(date)),
+          date: String(new Date(date).toISOString()),
           product,
           value: value / 100,
           seller,
