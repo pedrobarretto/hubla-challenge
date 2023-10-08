@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AfiliateEntity, SellEntity } from 'src/entities';
+import { AfiliateEntity, SellEntity } from '../entities';
 import { Afiliate } from 'src/interfaces';
 import { Repository } from 'typeorm';
 
@@ -25,6 +25,10 @@ export class AfiliateService {
 
   async delete(id: number): Promise<void> {
     await this.afiliateRepository.delete(id);
+  }
+
+  async update(id: number, afiliate: Partial<AfiliateEntity>): Promise<void> {
+    await this.afiliateRepository.update(id, afiliate);
   }
 
   async create(sellsList: Partial<SellEntity[]>): Promise<AfiliateEntity[]> {

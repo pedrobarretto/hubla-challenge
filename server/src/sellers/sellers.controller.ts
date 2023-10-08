@@ -5,9 +5,11 @@ import {
   Param,
   Post,
   Body,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { SellersService } from './sellers.service';
-import { SellerEntity } from 'src/entities';
+import { SellerEntity } from '../entities';
 
 @Controller('sellers')
 export class SellersController {
@@ -32,5 +34,21 @@ export class SellersController {
     if (!sell) throw new NotFoundException('Seller not found');
 
     return sell;
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() sell: SellerEntity,
+  ): Promise<void> {
+    await this.sellersService.update(id, sell);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
+    const sell = await this.sellersService.findById(id);
+    if (!sell) throw new NotFoundException('Seller not found');
+
+    await this.sellersService.delete(id);
   }
 }

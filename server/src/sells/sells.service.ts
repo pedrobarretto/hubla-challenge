@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AfiliateService } from 'src/afiliate/afiliate.service';
-import { SellEntity } from 'src/entities';
+import { SellEntity } from '../entities';
 import { Sell, SellType } from 'src/interfaces';
 import { SellersService } from 'src/sellers/sellers.service';
 import { Repository } from 'typeorm';

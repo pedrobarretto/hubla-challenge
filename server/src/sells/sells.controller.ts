@@ -9,15 +9,11 @@ import {
   Put,
 } from '@nestjs/common';
 import { SellsService } from './sells.service';
-import { SellEntity } from 'src/entities';
-import { SellersService } from 'src/sellers/sellers.service';
+import { SellEntity } from '../entities';
 
 @Controller('sells')
 export class SellsController {
-  constructor(
-    private readonly sellsService: SellsService,
-    private readonly sellersService: SellersService,
-  ) {}
+  constructor(private readonly sellsService: SellsService) {}
 
   @Get()
   async findAll(): Promise<SellEntity[]> {
@@ -50,6 +46,9 @@ export class SellsController {
     @Param('id') id: number,
     @Body() sell: SellEntity,
   ): Promise<void> {
+    const sellById = await this.sellsService.findById(id);
+    if (!sellById) throw new NotFoundException('Seller not found');
+
     await this.sellsService.update(id, sell);
   }
 

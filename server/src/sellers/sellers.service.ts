@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SellEntity, SellerEntity } from 'src/entities';
+import { SellEntity, SellerEntity } from '../entities';
 import { SellType, Seller } from 'src/interfaces';
 import { Repository } from 'typeorm';
 
@@ -61,6 +61,10 @@ export class SellersService {
     }
 
     return sellersArray;
+  }
+
+  async update(id: number, seller: Partial<SellerEntity>): Promise<void> {
+    await this.sellerReposiry.update(id, seller);
   }
 
   async delete(id: number): Promise<void> {

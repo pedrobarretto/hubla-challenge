@@ -5,9 +5,11 @@ import {
   Get,
   Param,
   Body,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { AfiliateService } from './afiliate.service';
-import { AfiliateEntity } from 'src/entities';
+import { AfiliateEntity } from '../entities';
 
 @Controller('afiliate')
 export class AfiliateController {
@@ -28,9 +30,29 @@ export class AfiliateController {
 
   @Post()
   async findByName(@Body() dto: { name: string }): Promise<AfiliateEntity[]> {
-    const sell = await this.afiliatesService.findByName(dto.name);
-    if (!sell) throw new NotFoundException('Afiliate not found');
+    const afiliate = await this.afiliatesService.findByName(dto.name);
+    if (afiliate.length === 0)
+      throw new NotFoundException('Afiliate not found');
 
-    return sell;
+    return afiliate;
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() afiliate: Partial<AfiliateEntity>,
+  ): Promise<void> {
+    const afiliateById = await this.afiliatesService.findById(id);
+    if (!afiliateById) throw new NotFoundException('Afiliate not found');
+
+    await this.afiliatesService.update(id, afiliate);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
+    const afiliate = await this.afiliatesService.findById(id);
+    if (!afiliate) throw new NotFoundException('Afiliate not found');
+
+    await this.afiliatesService.delete(id);
   }
 }

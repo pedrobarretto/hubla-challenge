@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SellsController } from './sells.controller';
 import { SellsService } from './sells.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AfiliateEntity, SellEntity, SellerEntity } from 'src/entities';
+import { AfiliateEntity, SellEntity, SellerEntity } from '../entities';
 import { SellersService } from 'src/sellers/sellers.service';
 import { AfiliateService } from 'src/afiliate/afiliate.service';
 
