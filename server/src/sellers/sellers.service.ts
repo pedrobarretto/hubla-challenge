@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SellEntity, SellerEntity } from '../entities';
-import { SellType, Seller } from 'src/interfaces';
+import { SaleEntity, SellerEntity } from '../entities';
+import { SaleType, Seller } from 'src/interfaces';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -23,8 +23,8 @@ export class SellersService {
     return this.sellerReposiry.findBy({ name });
   }
 
-  async create(sellsList: Partial<SellEntity[]>): Promise<SellerEntity[]> {
-    const seller = this.parseSellsForSeller(sellsList);
+  async create(salesList: Partial<SaleEntity[]>): Promise<SellerEntity[]> {
+    const seller = this.parseSalesForSeller(salesList);
     const sellersArray: SellerEntity[] = [];
 
     for (const person of seller) {
@@ -33,19 +33,19 @@ export class SellersService {
       });
 
       if (existingSeller) {
-        const list = sellsList.filter(
-          (sell) => sell?.seller === existingSeller.name,
+        const list = salesList.filter(
+          (sale) => sale?.seller === existingSeller.name,
         );
 
         let newValue = parseFloat(String(existingSeller.value));
-        list.forEach((sell) => {
+        list.forEach((sale) => {
           if (
-            sell?.type === SellType.productorSell ||
-            sell?.type === SellType.comissionReceived
+            sale?.type === SaleType.productorSale ||
+            sale?.type === SaleType.comissionReceived
           ) {
-            newValue += parseFloat(String(sell?.value));
-          } else if (sell?.type === SellType.comissionPaid) {
-            newValue -= parseFloat(String(sell?.value));
+            newValue += parseFloat(String(sale?.value));
+          } else if (sale?.type === SaleType.comissionPaid) {
+            newValue -= parseFloat(String(sale?.value));
           }
         });
 
@@ -71,18 +71,18 @@ export class SellersService {
     await this.sellerReposiry.delete(id);
   }
 
-  private parseSellsForSeller(sellsList: Partial<SellEntity[]>): Seller[] {
+  private parseSalesForSeller(salesList: Partial<SaleEntity[]>): Seller[] {
     const sellerMap = new Map<string, Seller>();
 
-    sellsList.forEach((sell) => {
-      if (sell) {
-        const name = sell.seller;
+    salesList.forEach((sale) => {
+      if (sale) {
+        const name = sale.seller;
         let sellerToUpdate = sellerMap.get(name);
 
         if (!sellerToUpdate) {
           sellerToUpdate = {
             name: name,
-            date: sell.date,
+            date: sale.date,
             value: 0,
           };
 
@@ -90,12 +90,12 @@ export class SellersService {
         }
 
         if (
-          sell.type === SellType.productorSell ||
-          sell.type === SellType.comissionReceived
+          sale.type === SaleType.productorSale ||
+          sale.type === SaleType.comissionReceived
         ) {
-          sellerToUpdate.value += sell.value;
-        } else if (sell.type === SellType.comissionPaid) {
-          sellerToUpdate.value -= sell.value;
+          sellerToUpdate.value += sale.value;
+        } else if (sale.type === SaleType.comissionPaid) {
+          sellerToUpdate.value -= sale.value;
         }
       }
     });

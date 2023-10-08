@@ -11,7 +11,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('sellers')
     .addTag('afiliates')
-    .addTag('sells')
+    .addTag('sales')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

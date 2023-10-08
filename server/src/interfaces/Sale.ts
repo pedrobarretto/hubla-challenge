@@ -1,4 +1,4 @@
-export interface Sell {
+export interface Sale {
   type: number;
   date: string;
   product: string;
@@ -6,9 +6,9 @@ export interface Sell {
   seller: string;
 }
 
-export enum SellType {
-  productorSell = 1,
-  afiliateSell = 2,
+export enum SaleType {
+  productorSale = 1,
+  afiliateSale = 2,
   comissionPaid = 3,
   comissionReceived = 4,
 }

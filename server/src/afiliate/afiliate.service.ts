@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AfiliateEntity, SellEntity } from '../entities';
+import { AfiliateEntity, SaleEntity } from '../entities';
 import { Afiliate } from 'src/interfaces';
 import { Repository } from 'typeorm';
 
@@ -31,8 +31,8 @@ export class AfiliateService {
     await this.afiliateRepository.update(id, afiliate);
   }
 
-  async create(sellsList: Partial<SellEntity[]>): Promise<AfiliateEntity[]> {
-    const afiliate = this.parseSellsForAfiliates(sellsList);
+  async create(salesList: Partial<SaleEntity[]>): Promise<AfiliateEntity[]> {
+    const afiliate = this.parseSalesForAfiliates(salesList);
     const afiliatesArray: AfiliateEntity[] = [];
 
     for (const person of afiliate) {
@@ -41,13 +41,13 @@ export class AfiliateService {
       });
 
       if (existingAfiliate) {
-        const list = sellsList.filter(
-          (sell) => sell?.seller === existingAfiliate.name,
+        const list = salesList.filter(
+          (sale) => sale?.seller === existingAfiliate.name,
         );
 
         let newValue = parseFloat(String(existingAfiliate.value));
-        list.forEach((sell) => {
-          newValue += parseFloat(String(sell?.value));
+        list.forEach((sale) => {
+          newValue += parseFloat(String(sale?.value));
         });
 
         existingAfiliate.value = newValue;
@@ -67,25 +67,25 @@ export class AfiliateService {
     return afiliatesArray;
   }
 
-  private parseSellsForAfiliates(sellsList: Partial<SellEntity[]>): Afiliate[] {
+  private parseSalesForAfiliates(salesList: Partial<SaleEntity[]>): Afiliate[] {
     const afiliateMap = new Map<string, Afiliate>();
 
-    sellsList.forEach((sell) => {
-      if (sell) {
-        const name = sell.seller;
+    salesList.forEach((sale) => {
+      if (sale) {
+        const name = sale.seller;
         let sellerToUpdate = afiliateMap.get(name);
 
         if (!sellerToUpdate) {
           sellerToUpdate = {
             name: name,
-            date: sell.date,
+            date: sale.date,
             value: 0,
           };
 
           afiliateMap.set(name, sellerToUpdate);
         }
 
-        sellerToUpdate.value += sell.value;
+        sellerToUpdate.value += sale.value;
       }
     });
 
