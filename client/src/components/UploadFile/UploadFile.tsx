@@ -13,8 +13,8 @@ export default function UploadFile() {
       const reader = new FileReader();
       reader.onload = async function (e) {
         if (e && e.target) {
-          const body = JSON.stringify({ sell: e.target.result });
-          await fetch("http://localhost:8000/sells", {
+          const body = JSON.stringify({ sale: e.target.result });
+          await fetch("http://localhost:8000/sales", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
