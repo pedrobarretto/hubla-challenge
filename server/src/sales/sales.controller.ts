@@ -51,7 +51,7 @@ export class SalesController {
   @Post('/seller')
   async findBySeller(@Body() dto: { seller: string }): Promise<SaleEntity[]> {
     const sale = await this.salesService.findBySeller(dto.seller);
-    if (!sale) throw new NotFoundException('Sale not found');
+    if (sale.length === 0) throw new NotFoundException('Sale not found');
 
     return sale;
   }

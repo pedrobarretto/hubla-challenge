@@ -72,26 +72,28 @@ describe('AfiliateService', () => {
 
   describe('findById', () => {
     it('should return an afiliate by ID', async () => {
-      const afiliateToFind: AfiliateEntity = {
-        date: new Date(),
-        value: 100.0,
-        name: 'Afiliate 1',
-        id: 1,
-      };
+      const afiliateToFind: AfiliateEntity[] = [
+        {
+          date: new Date(),
+          value: 100.0,
+          name: 'Afiliate 1',
+          id: 1,
+        },
+      ];
 
       jest
-        .spyOn(afiliateRepository, 'findOne')
+        .spyOn(afiliateRepository, 'findBy')
         .mockResolvedValueOnce(afiliateToFind);
 
       const result = await service.findById(1);
       expect(result).toEqual(afiliateToFind);
     });
 
-    it('should return null when an afiliate with the given ID is not found', async () => {
-      jest.spyOn(afiliateRepository, 'findOne').mockResolvedValueOnce(null);
+    it('should return NotFoundException when an afiliate with the given ID is not found', async () => {
+      jest.spyOn(afiliateRepository, 'findBy').mockResolvedValueOnce([]);
 
       const result = await service.findById(999);
-      expect(result).toBeNull();
+      expect(result).toStrictEqual([]);
     });
   });
 

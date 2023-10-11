@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AfiliateEntity, SaleEntity } from '../entities';
-import { Afiliate } from 'src/interfaces';
+import { Afiliate } from '../interfaces';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -15,8 +15,8 @@ export class AfiliateService {
     return this.afiliateRepository.find();
   }
 
-  async findById(id: number): Promise<AfiliateEntity | null> {
-    return this.afiliateRepository.findOne({ where: { id } });
+  async findById(id: number): Promise<AfiliateEntity[]> {
+    return this.afiliateRepository.findBy({ id });
   }
 
   async findByName(name: string): Promise<AfiliateEntity[]> {

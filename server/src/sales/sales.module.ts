@@ -3,8 +3,8 @@ import { SalesController } from './sales.controller';
 import { SalesService } from './sales.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AfiliateEntity, SaleEntity, SellerEntity } from '../entities';
-import { SellersService } from 'src/sellers/sellers.service';
-import { AfiliateService } from 'src/afiliate/afiliate.service';
+import { SellersService } from '../sellers/sellers.service';
+import { AfiliateService } from '../afiliate/afiliate.service';
 
 @Module({
   imports: [
