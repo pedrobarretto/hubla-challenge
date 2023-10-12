@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Button, Input } from "../";
+import { useSales } from "@/context";
 
-export default function UploadFile() {
+export function UploadFile() {
   const [file, setFile] = useState();
+  const { setSales } = useSales();
   const [formData, setFormData] = useState({
     file: null,
   });
@@ -14,13 +17,15 @@ export default function UploadFile() {
       reader.onload = async function (e) {
         if (e && e.target) {
           const body = JSON.stringify({ sale: e.target.result });
-          await fetch("http://localhost:8000/sales", {
+          const data = await fetch("http://localhost:8000/sales", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body,
-          });
+          }).then((res) => res.json());
+          console.log(data);
+          setSales(data);
         }
       };
       reader.readAsText(formData.file);
@@ -39,14 +44,8 @@ export default function UploadFile() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="file"
-        id="file"
-        name="file"
-        accept=".txt"
-        onChange={handleFileChange}
-      />
-      <button type="submit">Enviar</button>
+      <Input handleFileChange={handleFileChange} title="Escolher arquivo" />
+      <Button title="Enviar arquivo" type="submit" />
     </form>
   );
 }
