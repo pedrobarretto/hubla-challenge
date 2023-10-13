@@ -1,6 +1,6 @@
 "use client";
 
-import { SalesProvider } from "@/context";
+import { AfiliatesProvider, SalesProvider, SellersProvider } from "@/context";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
@@ -17,7 +17,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <SalesProvider>{children}</SalesProvider>
+        <SalesProvider>
+          <SellersProvider>
+            <AfiliatesProvider>{children}</AfiliatesProvider>
+          </SellersProvider>
+        </SalesProvider>
       </ChakraProvider>
     </CacheProvider>
   );

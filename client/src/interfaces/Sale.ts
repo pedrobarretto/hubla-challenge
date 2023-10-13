@@ -4,7 +4,7 @@ export interface Sale {
   product: string;
   value: number;
   seller: string;
-  id: string;
+  id: number;
 }
 
 export enum SaleType {

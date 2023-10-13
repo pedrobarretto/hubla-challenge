@@ -1,4 +1,4 @@
-import { SaleType } from '@/interfaces';
+import { SaleType } from '../interfaces';
 
 export function handleSaleType(type: number): string {
   switch (type) {

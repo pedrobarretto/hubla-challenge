@@ -24,7 +24,7 @@ export const Button: React.FC<ButtonProps> = ({ title, ...props }) => {
   return (
     <button
       {...props}
-      style={buttonStyle}
+      style={{ ...buttonStyle, ...props.style }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

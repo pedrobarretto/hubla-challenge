@@ -24,7 +24,7 @@ const SaleModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         <ModalHeader>Upload de Arquivo de Vendas</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <UploadFile />
+          <UploadFile onClose={onClose} />
         </ModalBody>
       </ModalContent>
     </Modal>

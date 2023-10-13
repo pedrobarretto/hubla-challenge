@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { Button, Input } from "../";
-import { useSales } from "@/context";
+import { useSales } from "../../context";
 
-export function UploadFile() {
-  const [file, setFile] = useState();
+export function UploadFile({ onClose }: { onClose: () => void }) {
   const { setSales } = useSales();
   const [formData, setFormData] = useState({
     file: null,
@@ -24,7 +23,6 @@ export function UploadFile() {
             },
             body,
           }).then((res) => res.json());
-          console.log(data);
           setSales(data);
         }
       };
@@ -35,10 +33,10 @@ export function UploadFile() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     onSubmit();
+    onClose();
   };
 
   const handleFileChange = (e: any) => {
-    setFile(e.target.files[0]);
     setFormData({ ...formData, file: e.target.files[0] });
   };
 
