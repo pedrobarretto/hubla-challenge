@@ -1,5 +1,8 @@
 # hubla-challenge
 
+![image](https://github.com/pedrobarretto/hubla-challenge/assets/61850145/554f9a69-7141-4b0c-9729-3d817921995b)
+
+
 Olá! Esse repositório é a minha proposta de solução para o desafio técnico para vaga [Software Engineer Pleno](https://www.linkedin.com/jobs/view/3715823889/?refId=23d95301-8262-4880-bbc6-80ffdb2ed8e0&trackingId=fxjV8%2B5YRQC4NqIMMOvB%2Bg%3D%3D) na Hubla.
 
 Esse repositório contém o código para o front-end e o back-end, esses foram feitos com a seguinte stack:
@@ -45,4 +48,7 @@ Caso você consiga executar o comando do docker sem problemas, ou após resolver
 
 Para executar o front-end, dentro da pasta `client`, em outro terminal, execute o comando `npm run dev`, e vá até a url [da aplicação next](https://localhost:3000).
 
+Após tudo rodando locamente, você deverá conseguir acessar a aplicação sem problemas!
+
+![image](https://github.com/pedrobarretto/hubla-challenge/assets/61850145/a1985b02-dba2-4396-8830-b99c75815fb3)
 
