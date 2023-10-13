@@ -35,7 +35,6 @@ export class SalesService {
     }
 
     const salesArray: SaleEntity[] = [];
-    // FIXME: any -> Sale
     const sellersSales: any[] = parsedSales
       .filter(
         (sale) =>
@@ -97,8 +96,6 @@ export class SalesService {
   }
 
   private parseFile(fileContent: string | ArrayBuffer): Sale[] {
-    console.log(fileContent);
-
     const lines = (
       typeof fileContent === 'string'
         ? fileContent
