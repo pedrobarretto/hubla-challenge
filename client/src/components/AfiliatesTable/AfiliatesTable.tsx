@@ -28,8 +28,8 @@ export const AfiliatesTable: React.FC<AfiliatesTableProps> = ({
         <Thead backgroundColor="brand.primary">
           <Tr>
             <Th color="brand.secondary">ID</Th>
-            <Th color="brand.secondary">Data</Th>
             <Th color="brand.secondary">Vendedor</Th>
+            <Th color="brand.secondary">Data</Th>
             <Th color="brand.secondary">Lucro</Th>
           </Tr>
         </Thead>
@@ -44,8 +44,8 @@ export const AfiliatesTable: React.FC<AfiliatesTableProps> = ({
             afiliates.map((afiliate) => (
               <Tr key={afiliate.id}>
                 <Td color="brand.secondary">{afiliate.id}</Td>
-                <Td color="brand.secondary">{formatDate(afiliate.date)}</Td>
                 <Td color="brand.secondary">{afiliate.name}</Td>
+                <Td color="brand.secondary">{formatDate(afiliate.date)}</Td>
                 <Td color="brand.secondary">{afiliate.value}</Td>
               </Tr>
             ))

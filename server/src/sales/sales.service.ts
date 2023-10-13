@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AfiliateService } from '../afiliate/afiliate.service';
 import { SaleEntity } from '../entities';
@@ -28,59 +28,66 @@ export class SalesService {
   }
 
   async create(sales: string): Promise<SaleEntity[]> {
-    const parsedSales: Sale[] = this.parseFile(sales);
+    try {
+      const parsedSales: Sale[] = this.parseFile(sales);
 
-    if (parsedSales.length === 0) {
-      throw new Error('Empty sales file');
+      if (parsedSales.length === 0) {
+        throw new HttpException(
+          'Arquivo de vendas vazio',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const salesArray: SaleEntity[] = [];
+      const sellersSales: any[] = parsedSales
+        .filter(
+          (sale) =>
+            sale &&
+            (sale.type === SaleType.productorSale ||
+              sale.type === SaleType.comissionPaid ||
+              sale.type === SaleType.comissionReceived),
+        )
+        .map((sale) => {
+          if (sale) {
+            return {
+              type: sale.type,
+              date: String(new Date(sale.date).toISOString()),
+              product: sale.product,
+              value: sale.value,
+              seller: sale.seller,
+            };
+          }
+        });
+
+      const afiliateSales: any[] = parsedSales
+        .filter((sale) => sale && sale.type === SaleType.afiliateSale)
+        .map((sale) => {
+          if (sale) {
+            return {
+              type: sale.type,
+              date: String(new Date(sale.date).toISOString()),
+              product: sale.product,
+              value: sale.value,
+              seller: sale.seller,
+            };
+          }
+        });
+
+      parsedSales.forEach(async (sale) => {
+        if (!sale) return;
+
+        const newSell = this.salesRespository.create(sale);
+        const createdSell = await this.salesRespository.save(newSell);
+        salesArray.push(createdSell);
+      });
+
+      await this.sellerService.create(sellersSales);
+      await this.afiliateService.create(afiliateSales);
+
+      return salesArray;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-
-    const salesArray: SaleEntity[] = [];
-    const sellersSales: any[] = parsedSales
-      .filter(
-        (sale) =>
-          sale &&
-          (sale.type === SaleType.productorSale ||
-            sale.type === SaleType.comissionPaid ||
-            sale.type === SaleType.comissionReceived),
-      )
-      .map((sale) => {
-        if (sale) {
-          return {
-            type: sale.type,
-            date: String(new Date(sale.date).toISOString()),
-            product: sale.product,
-            value: sale.value,
-            seller: sale.seller,
-          };
-        }
-      });
-
-    const afiliateSales: any[] = parsedSales
-      .filter((sale) => sale && sale.type === SaleType.afiliateSale)
-      .map((sale) => {
-        if (sale) {
-          return {
-            type: sale.type,
-            date: String(new Date(sale.date).toISOString()),
-            product: sale.product,
-            value: sale.value,
-            seller: sale.seller,
-          };
-        }
-      });
-
-    parsedSales.forEach(async (sale) => {
-      if (!sale) return;
-
-      const newSell = this.salesRespository.create(sale);
-      const createdSell = await this.salesRespository.save(newSell);
-      salesArray.push(createdSell);
-    });
-
-    await this.sellerService.create(sellersSales);
-    await this.afiliateService.create(afiliateSales);
-
-    return salesArray;
   }
 
   async update(
@@ -96,40 +103,52 @@ export class SalesService {
   }
 
   private parseFile(fileContent: string | ArrayBuffer): Sale[] {
-    const lines = (
-      typeof fileContent === 'string'
-        ? fileContent
-        : Buffer.from(fileContent).toString('utf-8')
-    ).split('\n');
+    try {
+      const lines = (
+        typeof fileContent === 'string'
+          ? fileContent
+          : Buffer.from(fileContent).toString('utf-8')
+      ).split('\n');
 
-    const transactions: Sale[] = [];
+      const transactions: Sale[] = [];
 
-    lines.forEach((line: string) => {
-      if (line.trim() === '') return;
+      lines.forEach((line: string, index: number) => {
+        if (line.trim() === '') return;
 
-      const type = parseInt(line.substring(0, 1));
-      const date = line.substring(1, 26);
-      const product = line.substring(26, 56).trim();
-      const value = parseInt(line.substring(56, 66));
-      const seller = line.substring(66, 86).trim();
+        const type = parseInt(line.substring(0, 1));
+        const date = line.substring(1, 26);
+        const product = line.substring(26, 56).trim();
+        const value = parseInt(line.substring(56, 66));
+        const seller = line.substring(66, 86).trim();
 
-      if (
-        type !== undefined &&
-        date &&
-        product &&
-        value !== undefined &&
-        seller
-      ) {
-        transactions.push({
-          type,
-          date: String(new Date(date).toISOString()),
-          product,
-          value: value / 100,
-          seller,
-        });
-      }
-    });
+        if (
+          type !== undefined &&
+          date &&
+          product &&
+          value !== undefined &&
+          seller
+        ) {
+          transactions.push({
+            type,
+            date: String(new Date(date).toISOString()),
+            product,
+            value: value / 100,
+            seller,
+          });
+        } else {
+          throw new HttpException(
+            `Erro na linha ${index + 1}: Formato de linha inválido`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      });
 
-    return transactions;
+      return transactions;
+    } catch (error) {
+      throw new HttpException(
+        `Erro ao analisar o arquivo: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

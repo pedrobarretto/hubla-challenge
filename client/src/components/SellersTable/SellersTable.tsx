@@ -26,8 +26,8 @@ export const SellersTable: React.FC<SellersTableProps> = ({ sellers }) => {
         <Thead backgroundColor="brand.primary">
           <Tr>
             <Th color="brand.secondary">ID</Th>
-            <Th color="brand.secondary">Data</Th>
             <Th color="brand.secondary">Vendedor</Th>
+            <Th color="brand.secondary">Data</Th>
             <Th color="brand.secondary">Lucro</Th>
           </Tr>
         </Thead>
@@ -42,8 +42,8 @@ export const SellersTable: React.FC<SellersTableProps> = ({ sellers }) => {
             sellers.map((seller) => (
               <Tr key={seller.id}>
                 <Td color="brand.secondary">{seller.id}</Td>
-                <Td color="brand.secondary">{formatDate(seller.date)}</Td>
                 <Td color="brand.secondary">{seller.name}</Td>
+                <Td color="brand.secondary">{formatDate(seller.date)}</Td>
                 <Td color="brand.secondary">{seller.value}</Td>
               </Tr>
             ))

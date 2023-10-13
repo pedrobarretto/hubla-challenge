@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { Button, Input } from "../";
 import { useSales } from "../../context";
+import { Flex, useToast } from "@chakra-ui/react";
 
 export function UploadFile({ onClose }: { onClose: () => void }) {
   const { setSales } = useSales();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     file: null,
   });
@@ -16,14 +18,35 @@ export function UploadFile({ onClose }: { onClose: () => void }) {
       reader.onload = async function (e) {
         if (e && e.target) {
           const body = JSON.stringify({ sale: e.target.result });
-          const data = await fetch("http://localhost:8000/sales", {
+          await fetch("http://localhost:8000/sales", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body,
-          }).then((res) => res.json());
-          setSales(data);
+          }).then(async (res) => {
+            const response = await res.json();
+            if (response.statusCode && response.statusCode !== 201) {
+              toast({
+                title: "Erro ao enviar arquivo!",
+                description: response?.message || "Formato do arquivo inválido",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+                position: "top-right",
+              });
+            } else {
+              setSales(response);
+              toast({
+                title: "Arquivo enviado",
+                description: "Vendas registradas com sucesso",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+                position: "top-right",
+              });
+            }
+          });
         }
       };
       reader.readAsText(formData.file);
@@ -42,8 +65,10 @@ export function UploadFile({ onClose }: { onClose: () => void }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input handleFileChange={handleFileChange} title="Escolher arquivo" />
-      <Button title="Enviar arquivo" type="submit" />
+      <Flex direction="row" justifyContent="space-between" alignItems="center">
+        <Input handleFileChange={handleFileChange} title="Escolher arquivo" />
+        <Button title="Enviar arquivo" type="submit" />
+      </Flex>
     </form>
   );
 }
